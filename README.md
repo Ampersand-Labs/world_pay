@@ -5,6 +5,11 @@ Gem for consuming the World Pay API
 Currently working:
 * Create customer
 * Get customer
+* Create customer SecureVault payment
+* Update customer SecureVault payment
+* Verify payment
+* Authorize payment
+* Charge payment
 
 
 ## Installation

@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["eman8519"]
   spec.email         = ["eman8519@gmail.com"]
   spec.summary       = %q{WorldPay Gem for their api.}
-  spec.homepage      = "https://github.com/Ampersand-Labs/worldpay"
+  spec.homepage      = "https://github.com/Ampersand-Labs/world_pay"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
