@@ -1,0 +1,11 @@
+{
+  "amount": "10.00",
+  "paymentVaultToken": {
+    "customerId": "5000006",
+    "paymentMethodId": "3"
+  },
+  "developerApplication": {
+    "developerId": 12345678,
+    "version": "1.2"
+  }
+}

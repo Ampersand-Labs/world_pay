@@ -1,0 +1,30 @@
+{
+  "firstName": "Randy",
+  "lastName": "Etheredge",
+  "phoneNumber": "111-111-1111",
+  "emailAddress": "some@emailaddress.com",
+  "userDefinedFields": [
+    {
+      "udfname": "udf1",
+      "udfvalue": 1
+    },
+    {
+      "udfname": "udf2",
+      "udfvalue": "RandyCard"
+    }
+  ],
+  "customerDuplicateCheckIndicator": 1,
+  "card": {
+    "number": "5275190070033036",
+    "expirationDate": "04/2018",
+    "firstName": "Randy",
+    "lastName": "Etheredge",
+    "address": {
+      "zip": "30319"
+    }
+  },
+  "developerApplication": {
+    "developerId": 12345678,
+    "version": "1.2"
+  }
+}
