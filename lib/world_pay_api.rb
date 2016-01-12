@@ -8,6 +8,7 @@ module WorldPayApi
   require 'world_pay_api/api/customer_payment'
   require 'world_pay_api/api/payment_method'
   require 'world_pay_api/api/payment'
+  require 'world_pay_api/api/pre_vault'
   
 
   # dependencies

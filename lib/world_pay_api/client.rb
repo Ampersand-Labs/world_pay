@@ -9,16 +9,21 @@ module WorldPayApi
         :live => 'https://gwapi.demo.securenet.com'
       }
 
-    attr_reader :secure_key, :server, :connection
+    attr_reader :secure_key, :server, :connection, :developer_id, :version
 
-    def initialize(server, secure_key = nil)
+    def initialize(server, secure_key = nil, developer_id, version)
         @secure_key = secure_key
         @server = DEFAULT_SERVERS[server]
-
+        @developer_id = developer_id
+        @version = version
+        
+        @logger = Logger.new "#{Rails.root}/log/world_pay.log"
+        @logger.level = Logger::ERROR
         @connection = Faraday.new({ url: @server, ssl: { verify: false }, request: {} }) do |builder|
           # response
           builder.use Faraday::Response::RaiseError
           builder.response :json
+          builder.response :logger, @logger
           builder.adapter Faraday.default_adapter
 
           # request
@@ -42,6 +47,10 @@ module WorldPayApi
     def payment
       WorldPayApi::Api::Payment.new(self)
     end
+    
+    def pre_vault
+      WorldPayApi::Api::PreVault.new(self)
+    end
 
     def get(path, options = {})
       request(:get, parse_query_and_convenience_headers(path, options))
@@ -49,6 +58,10 @@ module WorldPayApi
 
     def post(path, options = {})
       request(:post, parse_query_and_convenience_headers(path, options))
+    end
+    
+    def put(path, options = {})
+      request(:put, parse_query_and_convenience_headers(path, options))
     end
 
     def delete(path, options = {})
@@ -59,6 +72,9 @@ module WorldPayApi
 
     def parse_query_and_convenience_headers(path, options)
       raise 'Path can not be blank.' if path.to_s.empty?
+      if options[:body]
+        options[:body][:developerApplication] = { developerId: @developer_id, version: @version }
+      end
       opts = { body: options[:body] }
       opts[:url]    = path
       opts[:method] = options[:method] || :get
@@ -67,19 +83,28 @@ module WorldPayApi
     end
 
     def request(method, options = {})
-      url     = "/api/" + options.fetch(:url)
+      url     = "/api" + options.fetch(:url)
       params  = options[:params] || {}
       body    = options[:body].nil? ? nil : options[:body]
       headers = options[:headers]
       timeout = options[:timeout] || 20
       
-      @connection.send(method) do |req|
-        req.url(url)
-        req.params.merge!(params)
-        req.body = body.nil? ? nil : body.to_json
-        req.options.timeout = timeout
-        req.headers['Content-Type'] = 'application/json'
-        req.headers['Authorization'] = 'Basic ' + @secure_key
+      begin
+        @connection.send(method) do |req|
+          req.url(url)
+          req.params.merge!(params)
+          req.body = body.nil? ? nil : body.to_json
+          req.options.timeout = timeout
+          req.headers['Content-Type'] = 'application/json'
+          req.headers['Origin'] = 'dev.splitconnect.com'
+          req.headers['Authorization'] = 'Basic ' + @secure_key
+        end
+      rescue Faraday::Error => e
+        @logger.error "Error getting URL #{url.to_s} - #{e.response.to_s}"
+        raise
+      rescue Exception => e
+        @logger.error "Error getting URL #{url.to_s} - #{e.to_s}"
+        raise
       end
     end
   end
