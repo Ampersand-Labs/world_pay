@@ -6,7 +6,7 @@ module WorldPayApi
     API_VERSION = 'v1'
     DEFAULT_SERVERS = {
         :sandbox => 'https://gwapi.demo.securenet.com',
-        :live => 'https://gwapi.demo.securenet.com'
+        :live => 'https://gwapi.securenet.com'
       }
 
     attr_reader :secure_key, :server, :connection, :developer_id, :version
